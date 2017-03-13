@@ -61,3 +61,32 @@ $ git clone git@github.com:michaelliao/gitskills.git
 要克隆一个仓库，首先必须知道仓库的地址，然后使用git clone命令克隆。
 Git支持多种协议，包括https，但通过ssh支持的原生git协议速度最快
 
+## 分支管理
+### 创建与合并分支
+Git鼓励大量使用分支：
+查看分支：git branch
+创建分支：git branch <name>
+切换分支：git checkout <name>
+创建+切换分支：git checkout -b <name>
+合并某分支到当前分支：git merge <name>
+删除分支：git branch -d <name>
+
+### 解决冲突
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+用git log --graph命令可以看到分支合并图。
+
+### 分支管理策略
+Git分支十分强大，在团队开发中应该充分应用。
+通常，合并分支时，如果可能，Git会用Fast forward模式，但这种模式下，删除分支后，会丢掉分支信息。
+如果要强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。
+'''$ git merge --no-ff -m "merge with no-ff" dev'''
+
+### bug分支
+修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+当手头工作没有完成时，先把工作现场'''git stash'''一下，然后去修复bug，修复后，再'''git stash pop'''，回到工作现场。
+
+### feature分支
+开发一个新feature，最好新建一个分支；
+如果要丢弃一个没有被合并过的分支，可以通过'''git branch -D <name>'''强行删除。
+
+### 多人协作
