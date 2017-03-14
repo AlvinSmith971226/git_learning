@@ -95,3 +95,44 @@
 + 在本地创建和远程分支对应的分支，使用```git checkout -b branch-name origin/branch-name```，本地和远程分支的名称最好一致；
 + 从远程抓取分支，使用git pull，如果有冲突，要先处理冲突。
 + 建立本地分支和远程分支的关联，使用```git branch --set-upstream branch-name origin/branch-name```；
+
+
+## 标签管理
+#### 创建标签
+命令git tag <name>用于新建一个标签，默认为HEAD，也可以指定一个commit id；
+
+git tag -a <tagname> -m "blablabla..."可以指定标签信息；
+
+git tag -s <tagname> -m "blablabla..."可以用PGP签名标签；
+
+命令git tag可以查看所有标签
+#### 操作标签
+命令```git push origin <tagname>```可以推送一个本地标签；
+
+命令`git push origin --tags`可以推送全部未推送过的本地标签；
+
+命令``git tag -d <tagname>``可以删除一个本地标签；
+
+命令``git push origin :refs/tags/<tagname>``可以删除一个远程标签。
+
+## 使用GitHub
+``git clone git@github.com:michaelliao/bootstrap.git``
+
+在GitHub上，可以任意Fork开源仓库；
+
+自己拥有Fork后的仓库的读写权限；
+
+可以推送pull request给官方仓库来贡献代码
+
+## 自定义git
+
+#### 忽略特殊文件
+忽略某些文件时，需要编写.gitignore；
+
+.gitignore文件本身要放到版本库里，并且可以对.gitignore做版本管理！
+
+#### 配置别名
+
+
++ 该笔记记录自[廖大大的官方网站](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000),感谢廖大大！
++ 后面有时间再继续深入学习 -)
