@@ -135,3 +135,106 @@ git checkout其实是用版本库里的版本替换工作区的版本，无论�
 # 最后
 + 该笔记记录自[廖大大的官方网站](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000),感谢廖大大！
 + 后面有时间再继续深入学习 -)
+
+
+
+## 错误调试和测试
+#### 错误处理
+try...except...finally...处理机制  
+例如  
+```py
+  try:
+      print('try...')
+      r = 10 / int('2')
+      print('result:', r)
+  except ValueError as e:
+      print('ValueError:', e)
+  except ZeroDivisionError as e:
+      print('ZeroDivisionError:', e)
+  else:
+      print('no error!')
+  finally:
+      print('finally...')
+  print('END')
+```
+Python的错误其实也是class，所有的错误类型都继承自`BaseException`，所以在使用`except`时需要注意的是，它不但捕获该类型的错误，还把其子类也“一网打尽”  
+Python所有的错误都是从`BaseException`类派生的，常见的错误类型和继承关系看[这里](https://docs.python.org/3/library/exceptions.html#exception-hierarchy)
+
+#### 调用堆栈
+根据错误类型，可以追寻错误信息找到出错的语句  
+
+#### 记录错误
+使用`logging`模块记录错误信息
+```py
+# err_logging.py
+
+import logging
+
+def foo(s):
+    return 10 / int(s)
+
+def bar(s):
+    return foo(s) * 2
+
+def main():
+    try:
+        bar('0')
+    except Exception as e:
+        logging.exception(e)
+
+main()
+print('END')
+```
+出错后，`logging`把错误记录到日志文件里，方便排查
+
+#### 抛出错误
+可以自己定义一个错误的class，选择好继承关系，然后用`raise`抛出错误  
+```py
+# err_raise.py
+class FooError(ValueError):
+    pass
+```
+调用时 `raise FooError('balabala...')`  
+另外，也可以在补货一个错误后，将此错误抛出，以方便记录错误，方便排错  
+
+
+## 调试
+#### 断言`assert`  
+```py
+def foo(s):
+    n = int(s)
+    *assert n != 0, 'n is zero!'*
+    return 10 / n
+
+def main():
+    foo('0')
+```
+若断言失败，`assert`会抛出`AssertionError`:  
+```
+$ python3 err.py
+Traceback (most recent call last):
+  ...
+AssertionError: n is zero!
+```
+启动Python解释器时可以通过``-O``参数关闭`assert`,此时`assert`可以看成`pass`  
+
+#### `logging`
+和`assert`比，`logging`不会抛出错误，而且可以输出到文件  
+```py
+import logging
+logging.basicConfig(level=logging.INFO)
+s = '0'
+n = int(s)
+logging.info('n = %d' % n)
+print(10 / n)
+```
+运行输出
+```
+$ python3 err.py
+INFO:root:n = 0
+Traceback (most recent call last):
+  File "err.py", line 8, in <module>
+    print(10 / n)
+ZeroDivisionError: division by zero
+```
+这就是`logging`的好处，它允许你指定记录信息的级别，有`debug`，`info`，`warning`，`error`等几个级别，当我们指定`level=INFO`时，`logging.debug`就不起作用了。同理，指定`level=WARNING`后，`debug`和`info`就不起作用了。这样一来，你可以放心地输出不同级别的信息，也不用删除，最后统一控制输出哪个级别的信息
